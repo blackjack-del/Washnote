@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการร้านซักผ้าหยอดเหรียญ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .tab-active { border-bottom: 4px solid #3b82f6; color: #3b82f6; font-weight: bold; }
+        .tab-inactive { color: #6b7280; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <!-- Mobile-first Container -->
+    <div class="max-w-md mx-auto bg-white min-h-screen shadow-xl relative pb-20">
+        
+        <!-- Header -->
+        <header class="bg-blue-600 text-white p-4 shadow-md">
+            <h1 class="text-xl font-bold text-center">ระบบจัดการร้านซักผ้า</h1>
+        </header>
+
+        <!-- Dashboard Summary (Mockup) -->
+        <div class="p-4 grid grid-cols-2 gap-4 bg-blue-50">
+            <div class="bg-white p-3 rounded-lg shadow text-center border-t-4 border-green-500">
+                <p class="text-sm text-gray-500">รายรับรวมเดือนนี้</p>
+                <p class="text-xl font-bold text-green-600">฿14,500</p>
+            </div>
+            <div class="bg-white p-3 rounded-lg shadow text-center border-t-4 border-red-500">
+                <p class="text-sm text-gray-500">รายจ่ายรวมเดือนนี้</p>
+                <p class="text-xl font-bold text-red-600">฿2,850</p>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex border-b mt-2">
+            <button id="tab-income" onclick="switchTab('income')" class="flex-1 py-3 tab-active">💰 บันทึกรายรับ</button>
+            <button id="tab-expense" onclick="switchTab('expense')" class="flex-1 py-3 tab-inactive">💸 บันทึกรายจ่าย</button>
+        </div>
+
+        <!-- รายรับ Form -->
+        <div id="form-income" class="p-4">
+            <form class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 font-bold mb-1">รายรับจากเหรียญ (ยอดรวม)</label>
+                    <input type="number" class="w-full border rounded p-3 text-lg" placeholder="เช่น 5500" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-bold mb-1">รายรับจาก QR Code (ยอดสุทธิ)</label>
+                    <input type="number" class="w-full border rounded p-3 text-lg" placeholder="เช่น 2300">
+                    <p class="text-xs text-gray-500 mt-1">*ยอดหลังหัก % ส่วนแบ่งแล้ว</p>
+                </div>
+                <button type="button" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition">บันทึกรายรับ</button>
+            </form>
+        </div>
+
+        <!-- รายจ่าย Form (ซ่อนไว้เป็นค่าเริ่มต้น) -->
+        <div id="form-expense" class="p-4 hidden">
+            <form class="space-y-4">
+                <div class="bg-gray-50 p-3 rounded-lg border">
+                    <h3 class="font-bold text-blue-600 mb-2">ค่าใช้จ่ายประจำ (น้ำ/ไฟ/เช่า)</h3>
+                    <div class="grid grid-cols-2 gap-3 mb-3">
+                        <div>
+                            <label class="block text-gray-700 text-sm mb-1">ค่าน้ำ (หน่วย)</label>
+                            <input type="number" id="water-unit" class="w-full border rounded p-2" placeholder="หน่วยละ 20บ.">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm mb-1">ค่าไฟ (หน่วย)</label>
+                            <input type="number" id="elec-unit" class="w-full border rounded p-2" placeholder="หน่วยละ 9บ.">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm mb-1">อัปโหลดสลิปโอนเงิน</label>
+                        <input type="file" accept="image/*" class="w-full border rounded p-2 bg-white">
+                        <p class="text-xs text-green-600 mt-1">ระบบจะอ่านยอดโอนและหักลบค่าน้ำ/ไฟ เพื่อบันทึกค่าเช่าอัตโนมัติ</p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-3 rounded-lg border mt-4">
+                    <h3 class="font-bold text-orange-600 mb-2">ค่าซ่อมบำรุง / อื่นๆ</h3>
+                    <select class="w-full border rounded p-3 mb-3 bg-white">
+                        <option value="">-- เลือกเครื่องที่ซ่อมบำรุง --</option>
+                        <option value="1">เครื่องซักผ้า 1 (หน้า)</option>
+                        <option value="2">เครื่องซักผ้า 2 (กลาง)</option>
+                        <option value="3">ตู้กดน้ำดื่ม</option>
+                        <option value="0">ค่าใช้จ่ายส่วนกลาง (ไม่ระบุเครื่อง)</option>
+                    </select>
+                    <input type="text" class="w-full border rounded p-3 mb-3" placeholder="รายการ เช่น เปลี่ยนไส้กรอง">
+                    <input type="number" class="w-full border rounded p-3" placeholder="จำนวนเงิน (บาท)">
+                </div>
+
+                <button type="button" class="w-full bg-red-500 text-white font-bold py-3 rounded-lg hover:bg-red-600 transition">บันทึกรายจ่าย</button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Script สำหรับสลับแท็บ -->
+    <script>
+        function switchTab(tab) {
+            if(tab === 'income') {
+                document.getElementById('form-income').classList.remove('hidden');
+                document.getElementById('form-expense').classList.add('hidden');
+                document.getElementById('tab-income').className = "flex-1 py-3 tab-active";
+                document.getElementById('tab-expense').className = "flex-1 py-3 tab-inactive";
+            } else {
+                document.getElementById('form-income').classList.add('hidden');
+                document.getElementById('form-expense').classList.remove('hidden');
+                document.getElementById('tab-income').className = "flex-1 py-3 tab-inactive";
+                document.getElementById('tab-expense').className = "flex-1 py-3 tab-active";
+            }
+        }
+    </script>
+</body>
+</html>
